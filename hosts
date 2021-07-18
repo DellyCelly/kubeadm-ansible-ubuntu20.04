@@ -1,0 +1,62 @@
+
+
+Installing Ansible
+First, update the system packages via the commands to proceed with the installation of Ansible:
+
+- sudo apt update
+ 
+Then, proceed by installing the necessary software:
+
+- sudo apt install software-properties-common -y
+- sudo apt install ansible -y
+ 
+After a few seconds, Ansible should be ready for use.
+
+Configuring SSH login
+To allow Ansibile to correctly work on remote nodes, add SSH keys on the target servers, in order to guarantee access without requiring a password.
+
+Generate the two keys (private and public) first through the command:
+
+# ssh-keygen -t rsa
+ 
+ Generating public/private rsa key pair.
+ Enter file in which to save the key (/root/.ssh/id_rsa):
+ Enter passphrase (empty for no passphrase):
+ Enter same passphrase again:
+ 
+As shown above, you will be prompted for passwords, which you can leave blank.
+
+Once completed, send the public key to the remote servers using the "ssh-copy-id" command:
+
+# ssh-copy-id root@IP_WORKER_1
+ 
+# ssh-copy-id root@IP_WORKER_2
+ 
+# ssh-copy-id root@IP_MASTER
+ 
+For each configured machine, enter the login credentials when required.
+
+Configuring Master node
+Create a directory called "kube-cluster" in the home directory of your master machine:
+
+# mkdir ~/kube-cluster
+# cd ~/kube-cluster
+ 
+This will be the directory with all your Ansible playbooks for your workspace throughout the tutorial. In addition, under this directory all the local commands will be run.
+
+Create an "inventory" file, called hosts, using nano or your favorite text editor:
+
+# nano ~/kube-cluster/hosts
+ 
+Add the following text to the file specifying the remote machines information in your cluster:
+
+
+[masters]
+ master ansible_host=[IP_MASTER] ansible_user=root
+ 
+[workers]
+ worker1 ansible_host=[IP_WORKER_1] ansible_user=root
+ worker2 ansible_host=[IP_WORKER_2] ansible_user=root
+ 
+[all:vars]
+ ansible_python_interpreter=/usr/bin/python3
